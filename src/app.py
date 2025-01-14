@@ -49,8 +49,8 @@ def get_member(member_id):
 
     return jsonify(response_body), 200
 
-@app.route('/members', methods=['POST'])
-def add_member():
+@app.route('/members/<member>', methods=['POST'])
+def add_member(member):
     # this is how you can use the Family datastructure by calling its methods
     
     member = request.json
@@ -58,7 +58,7 @@ def add_member():
     
     response_body = {
             
-        "New_member": "member"  
+        "New_member": member
     }
     
     return jsonify(response_body), 200
