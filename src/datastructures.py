@@ -45,17 +45,19 @@ class FamilyStructure:
         return generated_id
 
     def add_member(self, member):
-        # fill this method and update the return
-        member['id'] = self._generate_id()
-        
+        if "id" not in member:
+            member["id"] = self._generate_id()
+        member["last_name"] = self.last_name
         self._members.append(member)
-
-        pass
-        
+        return member 
 
     def delete_member(self, id):
-        # fill this method and update the return
-        pass
+        member_to_delete = next((m for m in self._members if m["id"] == id), None)
+        if member_to_delete:
+            self._members.remove(member_to_delete)
+            return True
+        return False
+
 
     def get_member(self, id):
         # fill this method and update the return
