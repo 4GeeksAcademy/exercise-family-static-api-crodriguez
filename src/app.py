@@ -27,41 +27,50 @@ def sitemap():
 
 @app.route('/members', methods=['GET'])
 def get_members():
-
     # this is how you can use the Family datastructure by calling its methods
-    members = jackson_family.get_all_members()
-    response_body = {
-        "hello": "world",
-        "family": members
-    }
-
-
-    return jsonify(response_body), 200
+    try:
+        members = jackson_family.get_all_members()
+        response_body = {
+            "hello": "world",
+            "family": members
+        }
+        return jsonify(response_body), 200
+    except TypeError:
+        return [], 400
 
 @app.route('/members/<int:member_id>', methods=['GET']) 
 def get_member(member_id):
-    member = jackson_family.get_member(member_id)
-    if not member:
-        raise APIException("Member not found", 404)
-    return jsonify(member), 200
+    try:
+        member = jackson_family.get_member(member_id)
+        if not member:
+            raise APIException("Member not found", 404)
+        return jsonify(member), 200
+    except TypeError:
+        return [], 400
 
 
-@app.route('/members/<member>', methods=['POST'])
-def add_member(member):
+@app.route('/members', methods=['POST'])
+def add_member():
     # this is how you can use the Family datastructure by calling its methods
-    
-    member = request.json
-    if not member:
-        raise APIException("Invalid input", 400)
-    new_member = jackson_family.add_member(member)
-    return jsonify(new_member), 201
+    try:
+        member = request.json
+        member["id"] = jackson_family._generateId()
+        if not member:
+            raise APIException("Invalid input", 400)
+        new_member = jackson_family.add_member(member)
+        return jsonify(new_member), 201
+    except TypeError:
+        return [], 400
 
 @app.route('/members/<int:member_id>', methods=['DELETE']) 
 def delete_member(member_id):
-    success = jackson_family.delete_member(member_id)
-    if not success:
-        raise APIException("Member not found", 404)
-    return jsonify({"message": "Member deleted"}), 200
+    try:
+        success = jackson_family.delete_member(member_id)
+        if not success:
+            raise APIException("Member not found", 404)
+        return jsonify({"message": "Member deleted"}), 200
+    except TypeError:
+        return [], 400
 
 
 # this only runs if `$ python src/app.py` is executed
